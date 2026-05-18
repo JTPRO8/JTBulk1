@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 공학용 계산기</title>
+    <style>
+        /* [스타일 설정 - 공학용 계산기의 고급스러운 디자인을 입힙니다] */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e293b); /* 깊은 네이비 그라데이션 */
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .calculator {
+            background-color: #1e293b;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            width: 420px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* 계산기 액정 화면 디자인 */
+        .display {
+            background-color: #0f172a;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* 각도 모드 (DEG/RAD) 표시등 */
+        .angle-mode {
+            color: #38bdf8;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        /* 사용자가 입력 중인 수식 화면 */
+        .expression-screen {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            min-height: 1.8rem;
+            word-wrap: break-word;
+            word-break: break-all;
+            margin-top: 5px;
+        }
+
+        /* 계산 결과 화면 */
+        .result-screen {
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: 700;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        /* 버튼들 격자판 배치 (5열 구조) */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            border: none;
+            outline: none;
+            background-color: #334155;
+            color: #f8fafc;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 12px;
+            padding: 14px 0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        button:hover {
+            background-color: #475569;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* 공학 특수 기능 버튼 디자인 (상단 회색 톤) */
+        .btn-sci {
+            background-color: #475569;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+        }
+        .btn-sci:hover {
+            background-color: #64748b;
+        }
+
+        /* 숫자 버튼 디자인 (어두운 회색 톤) */
+        .btn-num {
+            background-color: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .btn-num:hover {
+            background-color: #334155;
+        }
+
+        /* 지우기/초기화 기능 버튼 */
+        .btn-action {
+            background-color: #64748b;
+        }
+        .btn-action:hover {
+            background-color: #94a3b8;
+        }
+
+        /* --- 브랜드 색상 일관성 적용 (이전 사칙연산 색상 고수) --- */
+        
+        /* 더하기 (+) : 빨간색 */
+        .btn-add { background-color: #ff4757; color: white; }
+        .btn-add:hover { background-color: #ff6b81; }
+
+        /* 빼기 (-) : 파란색 */
+        .btn-sub { background-color: #1e90ff; color: white; }
+        .btn-sub:hover { background-color: #70a1ff; }
+
+        /* 곱하기 (×) : 초록색 */
+        .btn-mul { background-color: #2ed573; color: white; }
+        .btn-mul:hover { background-color: #7bed9f; }
+
+        /* 나누기 (÷) : 노란색 */
+        .btn-div { background-color: #eccc68; color: #333; }
+        .btn-div:hover { background-color: #f1f2f6; color: #333; }
+
+        /* = (결과 보기) 버튼: 가로로 2칸 차지 */
+        .btn-equal {
+            background-color: #38bdf8;
+            color: #0f172a;
+            grid-column: span 2;
+            font-weight: 700;
+        }
+        .btn-equal:hover {
+            background-color: #7dd3fc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <!-- 화면 표시 액정 -->
+        <div class="display">
+            <div class="angle-mode" id="angle-mode-display">DEG</div>
+            <div class="expression-screen" id="expression-display"></div>
+            <div class="result-screen" id="result-display">0</div>
+        </div>
+
+        <!-- 버튼 모음 (5열 레이아웃) -->
+        <div class="buttons">
+            <!-- 1번째 줄: 각도 토글 및 기본 수식 조절 -->
+            <button class="btn-sci" onclick="toggleAngleMode()">DEG/RAD</button>
+            <button class="btn-sci" onclick="append('fact(')">x!</button>
+            <button class="btn-sci" onclick="append('(')">(</button>
+            <button class="btn-sci" onclick="append(')')">)</button>
+            <button class="btn-action" onclick="clearDisplay()">AC</button>
+
+            <!-- 2번째 줄: 삼각함수 및 로그 -->
+            <button class="btn-sci" onclick="append('sin(')">sin</button>
+            <button class="btn-sci" onclick="append('cos(')">cos</button>
+            <button class="btn-sci" onclick="append('tan(')">tan</button>
+            <button class="btn-sci" onclick="append('log(')">log</button>
+            <button class="btn-sci" onclick="append('ln(')">ln</button>
+
+            <!-- 3번째 줄: 거듭제곱, 루트, 상수 -->
+            <button class="btn-sci" onclick="append('^2')">x²</button>
+            <button class="btn-sci" onclick="append('^')">xʸ</button>
+            <button class="btn-sci" onclick="append('sqrt(')">√</button>
+            <button class="btn-sci" onclick="append('π')">π</button>
+            <button class="btn-sci" onclick="append('e')">e</button>
+
+            <!-- 4번째 줄: 숫자 및 나누기 -->
+            <button class="btn-num" onclick="append('7')">7</button>
+            <button class="btn-num" onclick="append('8')">8</button>
+            <button class="btn-num" onclick="append('9')">9</button>
+            <button class="btn-action" onclick="deleteLast()">DEL</button>
+            <button class="btn-div" onclick="append('/')">÷</button>
+
+            <!-- 5번째 줄: 숫자 및 곱하기 -->
+            <button class="btn-num" onclick="append('4')">4</button>
+            <button class="btn-num" onclick="append('5')">5</button>
+            <button class="btn-num" onclick="append('6')">6</button>
+            <button class="btn-sci" onclick="append('%')">%</button>
+            <button class="btn-mul" onclick="append('*')">×</button>
+
+            <!-- 6번째 줄: 숫자 및 빼기 -->
+            <button class="btn-num" onclick="append('1')">1</button>
+            <button class="btn-num" onclick="append('2')">2</button>
+            <button class="btn-num" onclick="append('3')">3</button>
+            <button class="btn-sci" onclick="calculateAns()">Ans</button>
+            <button class="btn-sub" onclick="append('-')">−</button>
+
+            <!-- 7번째 줄: 0, 소수점, 더하기, 결과 -->
+            <button class="btn-num" onclick="append('0')">0</button>
+            <button class="btn-num" onclick="append('.')">.</button>
+            <button class="btn-add" onclick="append('+')">+</button>
+            <button class="btn-equal" onclick="compute()">=</button>
+        </div>
+    </div>
+
+    <!-- [자바스크립트 - 고도의 수식 계산 및 공학 함수 정의 부분입니다] -->
+    <script>
+        let expression = ''; // 수식 입력 저장소
+        let lastResult = '0'; // 이전 연산 결과 기록 (Ans용)
+        let angleMode = 'DEG'; // 각도 법 단위 (DEG: 도, RAD: 라디안)
+
+        const expressionDisplay = document.getElementById('expression-display');
+        const resultDisplay = document.getElementById('result-display');
+        const angleModeDisplay = document.getElementById('angle-mode-display');
+
+        // --- [공학용 수학 특수 함수 정의] ---
+        // 계산기 안에서 사용자가 누르면 실행할 특수 연산 함수들을 선언해 둡니다.
+
+        // 1. 삼각함수 (각도 모드에 따라 변환)
+        function sin(x) {
+            const rad = angleMode === 'DEG' ? (x * Math.PI / 180) : x;
+            return Math.sin(rad);
+        }
+
+        function cos(x) {
+            const rad = angleMode === 'DEG' ? (x * Math.PI / 180) : x;
+            return Math.cos(rad);
+        }
+
+        function tan(x) {
+            const rad = angleMode === 'DEG' ? (x * Math.PI / 180) : x;
+            return Math.tan(rad);
+        }
+
+        // 2. 로그 함수 (상용로그와 자연로그)
+        function log(x) {
+            return Math.log10(x);
+        }
+
+        function ln(x) {
+            return Math.log(x);
+        }
+
+        // 3. 제곱근(루트) 함수
+        function sqrt(x) {
+            return Math.sqrt(x);
+        }
+
+        // 4. 팩토리얼(계승) 함수 (x!)
+        function fact(n) {
+            if (n < 0 || !Number.isInteger(n)) return NaN; // 음수나 소수는 계산 불가
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
+        // 5. 수학적 상수 정의
+        const π = Math.PI;
+        const e = Math.E;
+
+        // --- [계산 조작 함수] ---
+
+        // (1) 각도 단위 변환 (DEG <-> RAD)
+        function toggleAngleMode() {
+            angleMode = angleMode === 'DEG' ? 'RAD' : 'DEG';
+            angleModeDisplay.innerText = angleMode;
+        }
+
+        // (2) 전체 리셋 (AC)
+        function clearDisplay() {
+            expression = '';
+            expressionDisplay.innerText = '';
+            resultDisplay.innerText = '0';
+        }
+
+        // (3) 한 글자 지우기 (DEL)
+        function deleteLast() {
+            if (expression.length === 0) return;
+            
+            // 특수 함수 텍스트(예: sin(, cos( )일 경우 뭉텅이로 지워지도록 처리
+            const functionNames = ['sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'fact('];
+            let matched = false;
+
+            for (let name of functionNames) {
+                if (expression.endsWith(name)) {
+                    expression = expression.slice(0, -name.length);
+                    matched = true;
+                    break;
+                }
+            }
+
+            if (!matched) {
+                expression = expression.slice(0, -1);
+            }
+
+            updateDisplay();
+        }
+
+        // (4) 수식 추가하기
+        function append(value) {
+            // 처음 빈 상태에서 연산자(+ * /)를 누르면 Ans를 자동으로 붙여 줍니다.
+            if (expression === '' && ['+', '*', '/'].includes(value)) {
+                expression = 'Ans' + value;
+            } else {
+                expression += value;
+            }
+            updateDisplay();
+        }
+
+        // (5) 화면 업데이트
+        function updateDisplay() {
+            // 곱하기와 나누기 기호는 사람이 보기 편하게 기호(×, ÷)로 치환해 보여줍니다.
+            let viewText = expression
+                .replace(/\*/g, '×')
+                .replace(/\//g, '÷')
+                .replace(/\^2/g, '²')
+                .replace(/\^/g, '^');
+            expressionDisplay.innerText = viewText;
+        }
+
+        // (6) Ans 버튼 클릭 시 이전 계산 결과 삽입
+        function calculateAns() {
+            append('Ans');
+        }
+
+        // (7) 🌟 실제 계산 로직 (= 버튼) 🌟
+        function compute() {
+            if (expression === '') return;
+
+            try {
+                // 자바스크립트가 수학식으로 해독할 수 있도록 표현을 치환합니다.
+                let jsExpression = expression
+                    // 1. Ans -> 실제 이전 결과 값으로 치환
+                    .replace(/Ans/g, `(${lastResult})`)
+                    // 2. 거듭제곱 (x^y -> x**y)
+                    .replace(/\^/g, '**')
+                    // 3. 퍼센트 계산 (% -> /100)
+                    .replace(/%/g, '/100');
+
+                // 안전하게 수식을 실행합니다.
+                let result = eval(jsExpression);
+
+                if (result === undefined || isNaN(result)) {
+                    throw new Error();
+                }
+
+                // 소수점 10자리까지 반올림하여 긴 소수점 오류 방지
+                if (typeof result === 'number' && !Number.isInteger(result)) {
+                    result = Math.round(result * 10000000000) / 10000000000;
+                }
+
+                resultDisplay.innerText = result;
+                lastResult = result.toString(); // 연산 결과를 기록
+                expression = result.toString(); // 연속 계산이 가능하도록 수식 창에도 결과 대입
+            } catch (error) {
+                resultDisplay.innerText = 'Error';
+                expression = '';
+            }
+        }
+    </script>
+</body>
+</html>
