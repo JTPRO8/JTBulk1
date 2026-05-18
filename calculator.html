@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예쁜 퍼센트 계산기</title>
+    <style>
+        /* [스타일 설정 - 디자인을 예쁘게 꾸며주는 부분입니다] */
+        /* 기본 폰트를 불러옵니다 */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+        /* 배경과 전체적인 배치를 설정합니다 */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center; /* 가로 가운데 정렬 */
+            align-items: center;     /* 세로 가운데 정렬 */
+            height: 100vh;           /* 화면 전체 높이 사용 */
+            background: linear-gradient(135deg, #1e1e1e, #000000); /* 고급스러운 어두운 배경색 */
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* 계산기 겉모양을 설정합니다 */
+        .calculator {
+            background-color: #2c2c35;
+            border-radius: 24px;     /* 모서리를 둥글게 */
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); /* 그림자 효과로 입체감 부여 */
+            width: 320px;
+        }
+
+        /* 숫자가 표시되는 화면 부분입니다 */
+        .display {
+            background-color: #1e1e24;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: right;       /* 숫자를 오른쪽으로 정렬 */
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.3); /* 안쪽 그림자 */
+        }
+
+        /* 계산 전 이전 숫자가 작게 보이는 곳입니다 */
+        .previous-operand {
+            color: #888;
+            font-size: 1.2rem;
+            min-height: 1.5rem;
+        }
+
+        /* 현재 입력 중인 큰 숫자가 보이는 곳입니다 */
+        .current-operand {
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 600;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        /* 버튼들을 바둑판 모양으로 배치합니다 */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4칸으로 나눕니다 */
+            gap: 16px; /* 버튼 사이 간격 */
+        }
+
+        /* 기본 버튼 디자인 */
+        button {
+            border: none;
+            outline: none;
+            background-color: #3f3f4e;
+            color: #fff;
+            font-size: 1.5rem;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;         /* 마우스를 올리면 손가락 모양으로 변경 */
+            transition: all 0.2s ease; /* 눌렀을 때 부드럽게 움직이는 효과 */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* 마우스를 올렸을 때 버튼 색이 약간 밝아집니다 */
+        button:hover {
+            background-color: #4f4f60;
+            transform: translateY(-2px); /* 살짝 위로 떠오르는 느낌 */
+        }
+
+        /* 클릭했을 때 버튼이 눌리는 느낌을 줍니다 */
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* --- 사용자가 특별히 요청한 사칙연산 색상 지정 --- */
+        
+        /* 1. 더하기 버튼 (+) : 빨간색 */
+        .btn-add { background-color: #ff4757; color: white; } 
+        .btn-add:hover { background-color: #ff6b81; }
+
+        /* 2. 빼기 버튼 (-) : 파란색 */
+        .btn-sub { background-color: #1e90ff; color: white; } 
+        .btn-sub:hover { background-color: #70a1ff; }
+
+        /* 3. 곱하기 버튼 (×) : 초록색 */
+        .btn-mul { background-color: #2ed573; color: white; } 
+        .btn-mul:hover { background-color: #7bed9f; }
+
+        /* 4. 나누기 버튼 (÷) : 노란색 */
+        .btn-div { background-color: #eccc68; color: #333; } /* 노란색 배경에 글씨가 잘 보이게 어두운 색 적용 */
+        .btn-div:hover { background-color: #f1f2f6; color: #333;} 
+
+        /* = (는) 버튼: 2칸을 차지하게 만듭니다 */
+        .btn-equal {
+            background-color: #a4b0be;
+            grid-column: span 2; 
+        }
+        
+        /* 지우기 등 기능 버튼 색상 */
+        .btn-action {
+            background-color: #57606f;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 계산기 화면 뼈대 (HTML) -->
+    <div class="calculator">
+        <!-- 화면 표시부 -->
+        <div class="display">
+            <div class="previous-operand" id="previous-operand"></div>
+            <div class="current-operand" id="current-operand">0</div>
+        </div>
+        <!-- 버튼 모음 -->
+        <div class="buttons">
+            <!-- 1번째 줄 -->
+            <button class="btn-action" onclick="clearDisplay()">AC</button>  <!-- 전체 지우기 -->
+            <button class="btn-action" onclick="deleteNumber()">DEL</button> <!-- 하나 지우기 -->
+            <button class="btn-action" onclick="appendPercentage()">%</button> <!-- 퍼센트 -->
+            <button class="btn-div" onclick="chooseOperation('/')">÷</button> <!-- 나누기 (노란색) -->
+
+            <!-- 2번째 줄 -->
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="btn-mul" onclick="chooseOperation('*')">×</button> <!-- 곱하기 (초록색) -->
+
+            <!-- 3번째 줄 -->
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="btn-sub" onclick="chooseOperation('-')">−</button> <!-- 빼기 (파란색) -->
+
+            <!-- 4번째 줄 -->
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="btn-add" onclick="chooseOperation('+')">+</button> <!-- 더하기 (빨간색) -->
+
+            <!-- 5번째 줄 -->
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="btn-equal" onclick="compute()">=</button>         <!-- 결과 보기 -->
+        </div>
+    </div>
+
+    <!-- [자바스크립트 - 계산기가 실제로 작동하게 해주는 머리 역할입니다] -->
+    <script>
+        // 기억해둘 정보들(변수)을 만듭니다.
+        let currentOperand = '0'; // 지금 입력 중인 숫자
+        let previousOperand = ''; // 이전에 입력했던 숫자
+        let operation = undefined; // 선택한 사칙연산 기호 기호 (+, -, *, /)
+
+        // HTML에서 화면을 바꿔주기 위해 화면 요소를 가져옵니다.
+        const currentOperandTextElement = document.getElementById('current-operand');
+        const previousOperandTextElement = document.getElementById('previous-operand');
+
+        // 1. 화면 업데이트 함수 (입력할 때마다 화면을 새로고침 해줍니다)
+        function updateDisplay() {
+            currentOperandTextElement.innerText = currentOperand;
+            
+            // 만약 사칙연산 기호를 눌렀다면, 위에 작은 글씨로 표시해줍니다.
+            if (operation != null) {
+                // 곱하기와 나누기 기호는 예쁜 모양(×, ÷)으로 바꿔서 보여줍니다.
+                let displayOp = operation;
+                if (operation === '*') displayOp = '×';
+                if (operation === '/') displayOp = '÷';
+                
+                previousOperandTextElement.innerText = `${previousOperand} ${displayOp}`;
+            } else {
+                previousOperandTextElement.innerText = '';
+            }
+        }
+
+        // 2. 전체 지우기 (AC 버튼)
+        function clearDisplay() {
+            currentOperand = '0';
+            previousOperand = '';
+            operation = undefined;
+            updateDisplay();
+        }
+
+        // 3. 마지막 숫자 하나 지우기 (DEL 버튼)
+        function deleteNumber() {
+            if (currentOperand === '0') return; // 0이면 지울 게 없습니다.
+            
+            // 글자를 맨 뒤에서 하나 잘라냅니다.
+            currentOperand = currentOperand.toString().slice(0, -1);
+            
+            // 다 지워져서 비어있게 되면 다시 0을 채워줍니다.
+            if (currentOperand === '') currentOperand = '0';
+            updateDisplay();
+        }
+
+        // 4. 숫자 입력하기
+        function appendNumber(number) {
+            // 소수점(.)은 한 번만 찍을 수 있도록 막아줍니다.
+            if (number === '.' && currentOperand.includes('.')) return;
+            
+            // 처음 숫자를 누를 때 0을 지우고 누른 숫자로 바꿉니다.
+            if (currentOperand === '0' && number !== '.') {
+                currentOperand = number.toString();
+            } else {
+                // 기존 숫자에 새로 누른 숫자를 옆에 이어 붙입니다.
+                currentOperand = currentOperand.toString() + number.toString();
+            }
+            updateDisplay();
+        }
+
+        // 5. 퍼센트 계산 (%) - 현재 입력된 숫자를 100으로 나누어 줍니다.
+        // 예: 50을 치고 %를 누르면 0.5가 됩니다.
+        function appendPercentage() {
+            if (currentOperand === '') return;
+            const current = parseFloat(currentOperand); // 문자를 숫자로 변환
+            currentOperand = (current / 100).toString(); // 100으로 나눈 후 다시 문자로
+            updateDisplay();
+        }
+
+        // 6. 사칙연산 기호 선택하기 (+, -, *, /)
+        function chooseOperation(op) {
+            if (currentOperand === '') return;
+            
+            // 이미 이전에 누른 숫자가 있다면, 기호를 또 누르기 전에 먼저 계산을 해버립니다.
+            if (previousOperand !== '') {
+                compute();
+            }
+            operation = op; // 무슨 기호를 눌렀는지 기억합니다.
+            previousOperand = currentOperand; // 지금 숫자를 '이전 숫자'로 옮깁니다.
+            currentOperand = ''; // 새 숫자를 받기 위해 비웁니다.
+            updateDisplay();
+        }
+
+        // 7. 실제 계산 로직 (= 버튼)
+        function compute() {
+            let computation;
+            const prev = parseFloat(previousOperand); // 이전 숫자
+            const current = parseFloat(currentOperand); // 현재 숫자
+            
+            // 둘 중 하나라도 숫자가 아니면 계산을 멈춥니다.
+            if (isNaN(prev) || isNaN(current)) return;
+
+            // 어떤 기호를 눌렀느냐에 따라 다르게 계산합니다.
+            switch (operation) {
+                case '+':
+                    computation = prev + current;
+                    break;
+                case '-':
+                    computation = prev - current;
+                    break;
+                case '*':
+                    computation = prev * current;
+                    break;
+                case '/':
+                    // 0으로 나누는 경우는 수학적으로 불가능하므로 막아줍니다.
+                    if (current === 0) {
+                        alert("0으로 나눌 수 없습니다!");
+                        clearDisplay();
+                        return;
+                    }
+                    computation = prev / current;
+                    break;
+                default:
+                    return; // 기호가 없으면 아무것도 안 합니다.
+            }
+            
+            // 컴퓨터 계산의 특성상 소수점이 너무 길게 나오는 것을 방지하기 위해 반올림 처리를 해줍니다.
+            currentOperand = Math.round(computation * 100000000) / 100000000;
+            
+            operation = undefined; // 기호를 초기화합니다.
+            previousOperand = '';  // 이전 숫자도 초기화합니다.
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
