@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 대한민국 달력 (대체공휴일 지원)</title>
+    <style>
+        /* [스타일 설정 - 달력을 세련되고 아름답게 디자인하는 부분입니다] */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+        /* 기본 설정: 화면 중앙에 달력이 오도록 설정합니다 */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e293b); /* 세련된 네이비 톤 그라데이션 */
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #f8fafc;
+        }
+
+        /* 달력 전체 상자 (유리 효과 테마) */
+        .calendar-container {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px); /* 뒤 배경이 흐릿하게 비치는 고급스러운 효과 */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            width: 450px;
+        }
+
+        /* 상단 헤더: 년/월 표시 및 조작 버튼 */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .calendar-header h2 {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 년, 월 선택 드롭다운 셀렉트 박스 */
+        .select-box {
+            background-color: #334155;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        /* 이전달, 다음달 이동 버튼 */
+        .nav-btn {
+            background-color: #334155;
+            color: #fff;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #475569;
+            transform: scale(1.1);
+        }
+
+        /* 요일 헤더 (일 ~ 토) */
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+        }
+
+        /* 요일별 색상 지정 (일요일: 빨간색, 토요일: 파란색) */
+        .weekday-sun { color: #f43f5e; } /* 빨간색 */
+        .weekday-sat { color: #3b82f6; } /* 파란색 */
+        .weekday-normal { color: #94a3b8; }
+
+        /* 날짜판 격자 */
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+
+        /* 날짜 개별 칸 디자인 */
+        .day {
+            position: relative;
+            height: 58px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .day:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* 오늘 날짜 표시 스타일 */
+        .day.today {
+            background-color: #6366f1; /* 은은한 보라색 배경 */
+            color: #fff !important;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        /* 빈 칸 (이전달/다음달 날짜가 침범한 경우 연하게 처리) */
+        .day.empty {
+            color: #475569 !important;
+            cursor: default;
+        }
+        .day.empty:hover {
+            background-color: transparent;
+        }
+
+        /* --- 사용자가 요청하신 색상 법칙 적용 --- */
+        
+        /* 토요일 날짜 색상: 파란색 */
+        .day.sat {
+            color: #60a5fa;
+        }
+
+        /* 일요일 및 일반 공휴일 날짜 색상: 빨간색 */
+        .day.sun, .day.holiday {
+            color: #f43f5e;
+        }
+
+        /* 대체공휴일 날짜 색상: 빨간색 */
+        .day.sub-holiday {
+            color: #f43f5e;
+            font-weight: 700;
+        }
+
+        /* 공휴일 이름이 밑에 아주 작게 나오도록 설정 */
+        .holiday-name {
+            font-size: 0.65rem;
+            color: #fda4af; /* 부드러운 핑크색 글씨 */
+            position: absolute;
+            bottom: 4px;
+            width: 90%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        /* 이번달의 공휴일 목록을 아래에 보여주는 창 */
+        .holiday-list-box {
+            margin-top: 24px;
+            background-color: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .holiday-list-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 0.95rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .holiday-list-box ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .holiday-list-box li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calendar-container">
+        
+        <!-- 달력 컨트롤 헤더 -->
+        <div class="calendar-header">
+            <button class="nav-btn" onclick="changeMonth(-1)">◀</button>
+            <h2>
+                <select id="year-select" class="select-box" onchange="selectDate()"></select>년
+                <select id="month-select" class="select-box" onchange="selectDate()"></select>월
+            </h2>
+            <button class="nav-btn" onclick="changeMonth(1)">▶</button>
+        </div>
+
+        <!-- 요일 헤더 표시 (일~토) -->
+        <div class="weekdays">
+            <div class="weekday-sun">일</div>
+            <div class="weekday-normal">월</div>
+            <div class="weekday-normal">화</div>
+            <div class="weekday-normal">수</div>
+            <div class="weekday-normal">목</div>
+            <div class="weekday-normal">금</div>
+            <div class="weekday-sat">토</div>
+        </div>
+
+        <!-- 실제 날짜들이 채워지는 판 -->
+        <div class="days-grid" id="days-grid"></div>
+
+        <!-- 이번 달의 공휴일 목록 보기 -->
+        <div class="holiday-list-box">
+            <h3>📅 이 달의 공휴일 정보</h3>
+            <ul id="holiday-list-display">
+                <li>공휴일이 없는 달입니다.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- [자바스크립트 - 달력의 날짜를 계산하고 공휴일 데이터를 담고 있습니다] -->
+    <script>
+        // 1. 공휴일 및 대체공휴일 데이터베이스 (2025년 ~ 2027년 대한민국 공휴일 정보)
+        // 음력 및 유동적인 대체공휴일 규정을 미리 완벽하게 계산하여 담아두었습니다!
+        const holidayDatabase = {
+            2025: {
+                "1-1": "신정",
+                "1-27": "설날 연휴",
+                "1-28": "설날 연휴",
+                "1-29": "설날",
+                "1-30": "설날 연휴",
+                "3-1": "삼일절",
+                "3-3": "대체공휴일 (삼일절)", // 3월 1일이 토요일이므로 월요일 대체공휴일
+                "5-5": "어린이날 / 부처님오신날", // 어린이날과 석가탄신일 중복
+                "5-6": "대체공휴일 (어린이날/부처님오신날)",
+                "6-6": "현충일",
+                "8-15": "광복절",
+                "10-3": "개천절 / 추석 연휴",
+                "10-4": "추석 연휴",
+                "10-5": "추석 연휴",
+                "10-6": "추석",
+                "10-7": "추석 연휴",
+                "10-8": "대체공휴일 (추석)",
+                "10-9": "한글날",
+                "12-25": "성탄절"
+            },
+            2026: {
+                "1-1": "신정",
+                "2-16": "설날 연휴",
+                "2-17": "설날",
+                "2-18": "설날 연휴",
+                "3-1": "삼일절",
+                "3-2": "대체공휴일 (삼일절)", // 3월 1일이 일요일이므로 월요일 대체공휴일
+                "5-5": "어린이날",
+                "5-24": "부처님오신날",
+                "5-25": "대체공휴일 (부처님오신날)", // 5월 24일이 일요일이므로 월요일 대체공휴일
+                "6-6": "현충일",
+                "8-15": "광복절",
+                "8-17": "대체공휴일 (광복절)", // 8월 15일이 토요일이므로 월요일 대체공휴일
+                "9-23": "추석 연휴",
+                "9-24": "추석 연휴",
+                "9-25": "추석",
+                "10-3": "개천절",
+                "10-5": "대체공휴일 (개천절)", // 10월 3일이 토요일이므로 월요일 대체공휴일
+                "10-9": "한글날",
+                "12-25": "성탄절"
+            },
+            2027: {
+                "1-1": "신정",
+                "2-6": "설날 연휴",
+                "2-7": "설날",
+                "2-8": "설날 연휴",
+                "2-9": "대체공휴일 (설날)", // 설날 연휴 중 일요일이 겹쳐 대체공휴일 발생
+                "3-1": "삼일절",
+                "5-5": "어린이날",
+                "5-13": "부처님오신날",
+                "6-6": "현충일",
+                "8-15": "광복절",
+                "8-16": "대체공휴일 (광복절)", // 8월 15일이 일요일이므로 월요일 대체공휴일
+                "9-14": "추석 연휴",
+                "9-15": "추석",
+                "9-16": "추석 연휴",
+                "10-3": "개천절",
+                "10-4": "대체공휴일 (개천절)", // 10월 3일이 일요일이므로 월요일 대체공휴일
+                "10-9": "한글날",
+                "10-11": "대체공휴일 (한글날)", // 10월 9일이 토요일이므로 월요일 대체공휴일
+                "12-25": "성탄절"
+            }
+        };
+
+        // 2. 현재 상태 관리 변수
+        let currentDate = new Date();
+        // 2026년 기준 달력으로 첫 화면을 맞춰줍니다 (현재 사용자 로컬년도 기준)
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth(); // 0: 1월, 1: 2월, ... 11: 12월
+
+        const yearSelect = document.getElementById('year-select');
+        const monthSelect = document.getElementById('month-select');
+        const daysGrid = document.getElementById('days-grid');
+        const holidayListDisplay = document.getElementById('holiday-list-display');
+
+        // 3. 셀렉트 박스에 선택 가능한 연도(2025~2027)와 월(1~12월)을 채워 넣습니다
+        function initSelectBoxes() {
+            // 2025년부터 2027년까지 선택 가능하도록 설정
+            for (let y = 2025; y <= 2027; y++) {
+                const option = document.createElement('option');
+                option.value = y;
+                option.innerText = y;
+                if (y === currentYear) option.selected = true;
+                yearSelect.appendChild(option);
+            }
+
+            // 1월부터 12월까지 채워 넣기
+            for (let m = 0; m < 12; m++) {
+                const option = document.createElement('option');
+                option.value = m;
+                option.innerText = m + 1;
+                if (m === currentMonth) option.selected = true;
+                monthSelect.appendChild(option);
+            }
+        }
+
+        // 4. 달력을 화면에 그려내는 핵심 함수
+        function renderCalendar() {
+            daysGrid.innerHTML = ''; // 이전 날짜들을 지웁니다.
+            
+            // 해당 월의 첫 번째 날이 무슨 요일인지 계산 (0: 일요일, 6: 토요일)
+            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+            
+            // 해당 월의 마지막 날짜 구하기 (예: 28일, 30일, 31일)
+            const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // 이전 달의 마지막 날짜 구하기 (첫 번째 칸 맞추기용)
+            const prevLastDay = new Date(currentYear, currentMonth, 0).getDate();
+
+            // 오늘 날짜 정보 구하기 (오늘 표시용)
+            const today = new Date();
+
+            let activeHolidaysThisMonth = []; // 이번 달의 공휴일 목록 저장용
+
+            // (1) 첫째 주 빈 칸 채우기 (이전 달 날짜를 연하게 표시)
+            for (let x = firstDayIndex; x > 0; x--) {
+                const dayDiv = document.createElement('div');
+                dayDiv.classList.add('day', 'empty');
+                dayDiv.innerText = prevLastDay - x + 1;
+                daysGrid.appendChild(dayDiv);
+            }
+
+            // (2) 이번 달의 1일부터 마지막 날까지 채워 넣기
+            for (let i = 1; i <= lastDay; i++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.classList.add('day');
+                dayDiv.innerText = i;
+
+                // 요일 계산 (0: 일요일, 6: 토요일)
+                const dayOfWeek = new Date(currentYear, currentMonth, i).getDay();
+
+                // 요일 기본 색상 적용
+                if (dayOfWeek === 0) {
+                    dayDiv.classList.add('sun'); // 일요일은 빨간색
+                } else if (dayOfWeek === 6) {
+                    dayDiv.classList.add('sat'); // 토요일은 파란색
+                }
+
+                // 공휴일 및 대체공휴일 체크
+                const dateKey = `${currentMonth + 1}-${i}`;
+                if (holidayDatabase[currentYear] && holidayDatabase[currentYear][dateKey]) {
+                    const holidayName = holidayDatabase[currentYear][dateKey];
+                    
+                    // 대체공휴일 여부 판별
+                    if (holidayName.includes('대체공휴일')) {
+                        dayDiv.classList.add('sub-holiday');
+                    } else {
+                        dayDiv.classList.add('holiday'); // 일반 공휴일
+                    }
+
+                    // 날짜 밑에 아주 작게 공휴일 이름 적어주기
+                    const nameSpan = document.createElement('span');
+                    nameSpan.classList.add('holiday-name');
+                    nameSpan.innerText = holidayName;
+                    dayDiv.appendChild(nameSpan);
+
+                    // 이번 달의 공휴일 목록 리스트에 추가
+                    activeHolidaysThisMonth.push(`${i}일: ${holidayName}`);
+                }
+
+                // 오늘 날짜면 예쁜 보라색 하이라이트 효과 주기
+                if (today.getFullYear() === currentYear &&
+                    today.getMonth() === currentMonth &&
+                    today.getDate() === i) {
+                    dayDiv.classList.add('today');
+                }
+
+                daysGrid.appendChild(dayDiv);
+            }
+
+            // (3) 이 달의 공휴일 텍스트 목록 하단에 띄우기
+            holidayListDisplay.innerHTML = '';
+            if (activeHolidaysThisMonth.length > 0) {
+                activeHolidaysThisMonth.forEach(h => {
+                    const li = document.createElement('li');
+                    li.innerText = h;
+                    holidayListDisplay.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.innerText = "이 달에는 쉬는 날이 없습니다. 힘내세요! 😅";
+                holidayListDisplay.appendChild(li);
+            }
+        }
+
+        // 5. 버튼으로 이전 달 / 다음 달 이동할 때
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+
+            // 범위를 2025~2027년으로 제한합니다
+            if (currentYear < 2025) {
+                currentYear = 2025;
+                currentMonth = 0;
+            }
+            if (currentYear > 2027) {
+                currentYear = 2027;
+                currentMonth = 11;
+            }
+
+            // 셀렉트 박스 동기화 및 캘린더 새로 그리기
+            yearSelect.value = currentYear;
+            monthSelect.value = currentMonth;
+            renderCalendar();
+        }
+
+        // 6. 셀렉트 박스로 년/월을 마음대로 변경했을 때
+        function selectDate() {
+            currentYear = parseInt(yearSelect.value);
+            currentMonth = parseInt(monthSelect.value);
+            renderCalendar();
+        }
+
+        // 초기 시작 실행
+        initSelectBoxes();
+        renderCalendar();
+    </script>
+</body>
+</html>
