@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html class="light" lang="ko" id="html-tag">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>제니트리 - Jenetry Cosmetic Manufacturing</title>
+    <!-- Tailwind CSS 프레임워크와 플러그인 로드 -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- 구글 Noto Sans 폰트 로드 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <!-- 구글 머티리얼 심볼 아이콘 폰트 로드 -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    
+    <!-- 초기 다크 모드 감지 및 즉시 적용 스크립트 (화면 깜빡임 방지) -->
+    <script>
+        // 사용자가 이전에 다크모드를 켰거나, 설정한 적이 없다면 브라우저 테마 설정을 확인합니다.
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+        } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <!-- Tailwind 테마 사용자 설정 (확장 색상표 및 크기 정의) -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#dbdad7",
+                        "on-background": "#1a1c1a",
+                        "deep-charcoal": "#3C3D3D",
+                        "on-tertiary-fixed": "#161e12",
+                        "moss-muted": "#828D7C",
+                        "surface-bright": "#faf9f6",
+                        "primary-fixed-dim": "#bccabb",
+                        "surface-tint": "#556255",
+                        "tertiary-fixed-dim": "#c0c9b8",
+                        "secondary": "#625e55",
+                        "on-tertiary-fixed-variant": "#41493c",
+                        "inverse-primary": "#bccabb",
+                        "on-surface-variant": "#444843",
+                        "outline-variant": "#c4c8c1",
+                        "tertiary-fixed": "#dce5d3",
+                        "surface-container": "#efeeeb",
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#68645b",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#faf9f6",
+                        "outline": "#747872",
+                        "secondary-container": "#e8e2d6",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e3e2e0",
+                        "soft-cream": "#FDFBF7",
+                        "secondary-fixed": "#e8e2d6",
+                        "tertiary": "#495244",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1a1c1a",
+                        "inverse-on-surface": "#f2f1ee",
+                        "secondary-fixed-dim": "#cbc6ba",
+                        "tertiary-container": "#616a5b",
+                        "on-tertiary-container": "#e1ead8",
+                        "surface-container-low": "#f4f3f1",
+                        "on-error": "#ffffff",
+                        "background": "#faf9f6",
+                        "on-primary-fixed": "#131e14",
+                        "on-primary-fixed-variant": "#3d4a3e",
+                        "surface-container-highest": "#e3e2e0",
+                        "on-secondary-fixed-variant": "#4a473e",
+                        "primary-container": "#5e6b5e",
+                        "primary-fixed": "#d8e6d6",
+                        "primary": "#465347",
+                        "surface-container-high": "#e9e8e5",
+                        "on-secondary-fixed": "#1e1c14",
+                        "inverse-surface": "#2f312f",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#ddebdb",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1200px",
+                        "section-gap": "120px",
+                        "margin-desktop": "64px",
+                        "unit": "4px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Noto Sans"],
+                        "body-md": ["Noto Sans"],
+                        "headline-lg-mobile": ["Noto Sans"],
+                        "body-lg": ["Noto Sans"],
+                        "headline-md": ["Noto Sans"],
+                        "label-md": ["Noto Sans"],
+                        "label-sm": ["Noto Sans"],
+                        "headline-lg": ["Noto Sans"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "300" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.3", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.08em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Noto Sans', sans-serif; }
+        .smooth-scroll { scroll-behavior: smooth; }
+        
+        /* 🌊 화면 스크롤 등장 Reveal 애니메이션 효과 클래스 */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* 요소가 화면에 보일 때 자바스크립트로 active 클래스를 덧씌워 서서히 나타나도록 합니다 */
+        .reveal-element.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 모바일 메뉴 열기/닫기 슬라이드 트랜지션용 효과 */
+        #mobile-menu {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* 입력 필드 에러 흔들림 효과 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+        .input-error {
+            border-color: #ba1a1a !important;
+            animation: shake 0.2s ease-in-out 2;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background smooth-scroll overflow-x-hidden transition-colors duration-300">
+
+<!-- 👑 TopNavBar (상단 메뉴 바) - 투명 배경에서 스크롤 시 흐릿하게 불투명해지는 효과 적용 -->
+<nav id="navbar" class="fixed top-0 w-full z-50 bg-transparent transition-all duration-300 py-6">
+    <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-0 max-w-container-max mx-auto">
+        <!-- 브랜드 로고 -->
+        <a class="font-display-lg text-display-lg text-primary dark:text-primary-fixed tracking-tight hover:opacity-85 transition-opacity" href="#">
+            Jenetry
+        </a>
+        
+        <!-- 데스크톱 전용 네비게이션 링크 -->
+        <div class="hidden md:flex gap-8 items-center">
+            <a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300 font-body-md text-body-md ease-in-out" href="#about">About Us</a>
+            <a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300 font-body-md text-body-md ease-in-out" href="#products">Products</a>
+            <a class="text-secondary dark:text-secondary-fixed-dim hover:text-primary dark:hover:text-primary-fixed transition-colors duration-300 font-body-md text-body-md ease-in-out" href="#contact">Contact</a>
+        </div>
+        
+        <!-- 네비게이션 오른쪽 기능 영역 (테마 전환 및 버튼) -->
+        <div class="flex items-center gap-4">
+            <!-- 🌗 다크 모드 활성화 스위치 (해/달 아이콘) -->
+            <button id="theme-toggle" class="text-primary dark:text-primary-fixed hover:bg-surface-container-high dark:hover:bg-primary-container/30 p-2.5 rounded-full transition-all duration-300 flex items-center justify-center" aria-label="다크 모드 전환">
+                <span id="theme-toggle-icon" class="material-symbols-outlined text-2xl">dark_mode</span>
+            </button>
+
+            <!-- 문의하기 즉시 이동 버튼 (데스크톱) -->
+            <a class="bg-primary-container text-on-primary hover:opacity-90 hover:shadow-md transition-all px-6 py-3 rounded-DEFAULT font-label-md text-label-md hidden md:block" href="#contact">
+                Inquire
+            </a>
+
+            <!-- 📱 모바일 삼선 햄버거 메뉴 토글 버튼 -->
+            <button id="mobile-menu-btn" class="md:hidden text-primary dark:text-primary-fixed p-2 rounded-full hover:bg-surface-container-high dark:hover:bg-primary-container/30 transition-colors" aria-label="메뉴 토글">
+                <span id="mobile-menu-icon" class="material-symbols-outlined text-3xl">menu</span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- 📱 모바일 전용 드롭다운 메뉴 레이어 (기본은 감춰져 있음) -->
+<div id="mobile-menu" class="hidden md:hidden fixed top-[80px] left-0 w-full bg-surface/95 dark:bg-surface-container/95 backdrop-blur-md shadow-lg border-t border-outline-variant/30 py-6 px-margin-mobile flex flex-col gap-6 z-40 transform -translate-y-2 opacity-0">
+    <a class="mobile-nav-link text-secondary dark:text-secondary-fixed-dim hover:text-primary transition-colors duration-300 font-body-md text-body-md py-2 border-b border-outline-variant/10" href="#about">About Us</a>
+    <a class="mobile-nav-link text-secondary dark:text-secondary-fixed-dim hover:text-primary transition-colors duration-300 font-body-md text-body-md py-2 border-b border-outline-variant/10" href="#products">Products</a>
+    <a class="mobile-nav-link text-secondary dark:text-secondary-fixed-dim hover:text-primary transition-colors duration-300 font-body-md text-body-md py-2 border-b border-outline-variant/10" href="#contact">Contact</a>
+    <a class="mobile-nav-link bg-primary-container text-on-primary text-center hover:opacity-90 transition-opacity px-6 py-3 rounded-DEFAULT font-label-md text-label-md mt-2" href="#contact">Inquire</a>
+</div>
+
+<main class="pt-0">
+    <!-- 🚀 Hero Section (히어로 첫화면) -->
+    <section class="h-screen w-full flex flex-col md:flex-row pt-20 bg-surface-container-low dark:bg-surface-dim transition-colors duration-300">
+        <!-- 히어로 텍스트 영역 -->
+        <div class="w-full md:w-1/2 flex items-center justify-center p-8 md:p-16 lg:p-24 text-left">
+            <div class="max-w-xl reveal-element active"> <!-- 히어로는 즉시 보이도록 active 처리 -->
+                <h1 class="font-display-lg text-display-lg text-primary-container dark:text-primary-fixed mb-6 drop-shadow-md text-4xl md:text-5xl lg:text-6xl font-light">
+                    당신의 피부 건강을 위하여
+                </h1>
+                <p class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-deep-charcoal dark:text-surface-bright mb-10 drop-shadow-sm">
+                    자연의 정밀함과 과학의 만남,<br class="hidden md:block"/> 제니트리 코스메틱 매뉴팩처링.
+                </p>
+                <a class="inline-block bg-primary-container text-on-primary dark:bg-primary-fixed dark:text-on-primary-fixed font-label-md text-label-md px-10 py-4 rounded-DEFAULT shadow-[0_8px_30px_rgba(94,107,94,0.15)] hover:-translate-y-1 transition-transform duration-300" href="#contact">
+                    문의하기
+                </a>
+            </div>
+        </div>
+        <!-- 히어로 대표 이미지 영역 -->
+        <div class="w-full md:w-1/2 h-full min-h-[50vh] overflow-hidden">
+            <img alt="Hero Background" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2F6KW1Vy0orvT0pZjOWvUB-ureSXEhbRFvnnETLa_k_VirQBxa4ZtOcnKG8SWXlBwkSRy-07cnhQAy3_KE4xhF3AY5Yd8TtBnRIacQCDmny22ZO69hMj6RBZvr5ErgIU0V67Pe8Dtqrq7g3m6HKXSYO84P5w7ApNDKWWZ4x3cXDxet3ikHhJXLsMZp4f8P6X432XSBPpUX_1Q9IJT-FbWDR8FX_8gq6OsY9x2C_DuVZhlvPKd9x7cV4tWycrD7BMSJ-WnUwipGLo"/>
+        </div>
+    </section>
+
+    <!-- 🌿 About Us Section (회사 소개 및 철학) -->
+    <section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-bright dark:bg-surface transition-colors duration-300" id="about">
+        <div class="max-w-container-max mx-auto flex flex-col md:flex-row items-center gap-gutter">
+            <!-- 왼쪽 제조 환경 이미지 -->
+            <div class="w-full md:w-1/2 reveal-element">
+                <img alt="Clean manufacturing environment" class="w-full h-auto rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.05)] object-cover aspect-[4/3] transform hover:scale-[1.02] transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1MwyM6RaqkmizL09R1NCblU68m94zUIByMkZeSbNttH7gG4MlPkOKKvKWMEMbUnVDgRXLfRTN7qG_VIczuvl2H_K8gw9a-8wDgMdG5b_-pqVYA7IzQtIpI4elehAbrylE235f68CivQuzOIVxcnljqaYTXPYnnquRc45ELFLMMbxjaB6J4628rxPADUPp-qHN01-6V-8yBuKi6d2BbfYcWU-aeeEt7MXmH4i4gg1Vbb8O0fCOls01Pc1WOEoHnqVwGh-ctZbIjho"/>
+            </div>
+            <!-- 오른쪽 텍스트 설명 -->
+            <div class="w-full md:w-1/2 md:pl-12 mt-10 md:mt-0 reveal-element">
+                <h2 class="font-headline-lg text-headline-lg text-primary dark:text-primary-fixed mb-6">Brand Story & Philosophy</h2>
+                <div class="w-12 h-1 bg-tertiary-fixed-dim dark:bg-tertiary mb-8"></div>
+                <p class="font-body-lg text-body-lg text-on-surface-variant dark:text-surface-container-highest mb-6">
+                    제니트리는 'Natural Precision' 이라는 철학 아래, 자연에서 얻은 가장 순수한 성분들을 최첨단 과학 기술로 정제하여 완벽한 포뮬러를 탄생시킵니다.
+                </p>
+                <p class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim mb-8">
+                    우리의 하이엔드 매뉴팩처링 시설은 오직 피부 건강만을 생각하며, 타협하지 않는 품질 기준을 적용합니다. 모든 공정은 투명하고 정밀하게 관리되며, 고객의 비전을 최고의 제품으로 실현하는 파트너가 됩니다.
+                </p>
+                <!-- 태그 뱃지 -->
+                <div class="flex flex-wrap gap-4">
+                    <span class="bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm px-4 py-2 rounded-full tracking-widest uppercase">Organic</span>
+                    <span class="bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm px-4 py-2 rounded-full tracking-widest uppercase">Vegan</span>
+                    <span class="bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm px-4 py-2 rounded-full tracking-widest uppercase">Dermatologist Tested</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🧪 Product Showcase Section (제품 카테고리 및 전문성) -->
+    <section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface dark:bg-surface-container-lowest transition-colors duration-300" id="products">
+        <div class="max-w-container-max mx-auto flex flex-col md:flex-row-reverse items-center gap-gutter">
+            
+            <!-- 오른쪽 대표 카드 (클릭 시 상세 모달 오픈!) -->
+            <div class="w-full md:w-1/2 h-full reveal-element cursor-pointer" onclick="openProductModal('skincare')">
+                <div class="relative rounded-xl overflow-hidden group h-full min-h-[400px] md:min-h-[600px] shadow-lg hover:shadow-2xl transition-all duration-500">
+                    <img alt="Premium skincare product lineup" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOj48cCOoJOX9jdbDW1vQz07j1wM1uweN_FOcfTjcpX40qK3KLm3Gtf6ijAYi9n8XLooEcpQtw7WqUK33HxQwyD0yk4VIwuobph5AboYDEXuvlwQx6SdJrxwVak1fg3LA8W5JsnCZB9llQbT48428ma7obQCoyQqNB0UXqjk1IMEF9zdIlFF3-6lsn18vz9eToJUHgVi4E2icNpXoqLftcgvni6GH7XKZqkCj9hqO1VEGun38jxnx8cwy9_ZSd3nM8Id2SCeQZYEg"/>
+                    <div class="absolute inset-0 bg-gradient-to-t from-deep-charcoal/80 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-8 w-full text-left">
+                        <h3 class="font-headline-md text-headline-md text-on-tertiary mb-2">Skincare Mastery</h3>
+                        <p class="font-body-md text-body-md text-on-tertiary/90">고기능성 세럼부터 보습 크림까지, 독자적인 포뮬러 개발 (자세히 보기)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 왼쪽 타이틀 및 그리드 카드 -->
+            <div class="w-full md:w-1/2 md:pr-12 mt-10 md:mt-0 flex flex-col gap-8">
+                <div class="reveal-element">
+                    <h2 class="font-headline-lg text-headline-lg text-primary dark:text-primary-fixed mb-4">Our Excellence</h2>
+                    <div class="w-12 h-1 bg-tertiary-fixed-dim dark:bg-tertiary mb-6"></div>
+                    <p class="font-body-lg text-body-lg text-secondary dark:text-secondary-fixed-dim">맞춤형 화장품 제조부터 글로벌 스탠다드 충족까지, 제니트리의 전문 분야를 클릭해 더 깊은 이야기를 알아보세요.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Feature 2: Bodycare (클릭 시 모달 오픈) -->
+                    <div onclick="openProductModal('bodycare')" class="bg-secondary-container dark:bg-secondary rounded-xl p-8 flex flex-col justify-end relative overflow-hidden group shadow-sm hover:shadow-[0_15px_40px_rgba(94,107,94,0.15)] hover:-translate-y-1 transition-all duration-300 min-h-[250px] cursor-pointer reveal-element">
+                        <span class="material-symbols-outlined text-primary dark:text-primary-fixed mb-4 text-4xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">water_drop</span>
+                        <h3 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed mb-2">Bodycare</h3>
+                        <p class="font-body-md text-body-md text-on-secondary-container dark:text-on-primary">순한 성분의 바디 워시 및 로션 라인업 (자세히 보기)</p>
+                    </div>
+                    
+                    <!-- Feature 3: Specialized Formulas (클릭 시 모달 오픈) -->
+                    <div onclick="openProductModal('special')" class="bg-surface-container-high dark:bg-primary-container rounded-xl p-8 flex flex-col justify-end relative overflow-hidden group shadow-sm hover:shadow-[0_15px_40px_rgba(94,107,94,0.15)] hover:-translate-y-1 transition-all duration-300 min-h-[250px] cursor-pointer reveal-element">
+                        <span class="material-symbols-outlined text-primary dark:text-primary-fixed mb-4 text-4xl group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">science</span>
+                        <h3 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed mb-2">Specialized Formulas</h3>
+                        <p class="font-body-md text-body-md text-on-surface-variant dark:text-on-primary-container">클린 뷰티, 비건 코스메틱 맞춤 제조 (자세히 보기)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🔒 Contact Section (상담 문의 폼 및 정보) -->
+    <section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-soft-cream dark:bg-surface-dim transition-colors duration-300" id="contact">
+        <div class="max-w-container-max mx-auto flex flex-col md:flex-row gap-gutter">
+            <!-- 왼쪽 연락처 상세 설명 -->
+            <div class="w-full md:w-1/2 pr-0 md:pr-12 reveal-element">
+                <h2 class="font-headline-lg text-headline-lg text-primary dark:text-primary-fixed mb-6">Partner with Jenetry</h2>
+                <p class="font-body-lg text-body-lg text-secondary dark:text-secondary-fixed-dim mb-10">
+                    새로운 뷰티 브랜드를 준비하시거나, 제조 파트너를 찾고 계신가요? 제니트리와 함께 당신의 비전을 현실로 만들어보세요.
+                </p>
+                
+                <div class="space-y-6">
+                    <!-- 주소 -->
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-secondary-container dark:bg-secondary flex items-center justify-center text-primary dark:text-primary-fixed">
+                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
+                        </div>
+                        <div>
+                            <h4 class="font-label-md text-label-md text-on-surface dark:text-surface-bright">Location</h4>
+                            <p class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim">서울시 강남구 테헤란로 123</p>
+                        </div>
+                    </div>
+                    <!-- 이메일 -->
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-secondary-container dark:bg-secondary flex items-center justify-center text-primary dark:text-primary-fixed">
+                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mail</span>
+                        </div>
+                        <div>
+                            <h4 class="font-label-md text-label-md text-on-surface dark:text-surface-bright">Email</h4>
+                            <p class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim">partner@jenetry.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 오른쪽 문의 등록 폼 (스마트 인터랙티브 기능 탑재) -->
+            <div class="w-full md:w-1/2 mt-12 md:mt-0 reveal-element">
+                <div class="bg-surface dark:bg-surface-container p-8 md:p-10 rounded-xl shadow-[0_20px_60px_rgba(94,107,94,0.06)] border border-outline-variant/30 transition-colors">
+                    <form id="contact-form" class="space-y-6" novalidate>
+                        <!-- 이름 입력란 -->
+                        <div>
+                            <label class="block font-label-md text-label-md text-on-surface dark:text-primary-fixed mb-2" for="name">Name</label>
+                            <input class="w-full bg-transparent border-0 border-b border-outline-variant focus:border-primary focus:ring-0 px-0 py-3 font-body-md text-body-md text-on-surface dark:text-on-background transition-colors placeholder:text-outline-variant/70" id="name" placeholder="홍길동" type="text" required/>
+                            <p id="name-error" class="hidden text-xs text-error mt-1">이름을 입력해 주세요.</p>
+                        </div>
+                        <!-- 이메일 입력란 -->
+                        <div>
+                            <label class="block font-label-md text-label-md text-on-surface dark:text-primary-fixed mb-2" for="email">Email</label>
+                            <input class="w-full bg-transparent border-0 border-b border-outline-variant focus:border-primary focus:ring-0 px-0 py-3 font-body-md text-body-md text-on-surface dark:text-on-background transition-colors placeholder:text-outline-variant/70" id="email" placeholder="example@email.com" type="email" required/>
+                            <p id="email-error" class="hidden text-xs text-error mt-1">올바른 이메일 주소를 입력해 주세요.</p>
+                        </div>
+                        <!-- 문의 메시지 입력란 -->
+                        <div>
+                            <label class="block font-label-md text-label-md text-on-surface dark:text-primary-fixed mb-2" for="message">Message</label>
+                            <textarea class="w-full bg-transparent border-0 border-b border-outline-variant focus:border-primary focus:ring-0 px-0 py-3 font-body-md text-body-md text-on-surface dark:text-on-background transition-colors resize-none placeholder:text-outline-variant/70" id="message" placeholder="문의하실 내용을 남겨주세요." rows="4" required></textarea>
+                            <p id="message-error" class="hidden text-xs text-error mt-1">문의 내용을 입력해 주세요.</p>
+                        </div>
+                        <!-- 문의 보내기 전송 단추 (클릭 시 로딩 스피너 작동 및 유효성 검사 시작) -->
+                        <button id="submit-btn" class="w-full bg-primary-container text-on-primary font-label-md text-label-md py-4 rounded-DEFAULT hover:bg-primary transition-all duration-300 mt-4 flex items-center justify-center gap-2" type="button" onclick="submitContactForm()">
+                            <span id="btn-text">문의 보내기</span>
+                            <!-- 로딩 동그라미 스핀 애니메이션 (기본 숨김) -->
+                            <svg id="loading-spinner" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- 👣 Footer (하단 영역) -->
+<footer class="w-full py-section-gap bg-secondary-container dark:bg-tertiary-container text-on-secondary-container dark:text-on-tertiary-container transition-colors duration-300">
+    <div class="flex flex-col md:flex-row justify-between items-start px-margin-desktop gap-gutter max-w-container-max mx-auto">
+        <div class="mb-8 md:mb-0">
+            <div class="font-display-lg text-display-lg text-primary dark:text-primary-fixed mb-4">
+                Jenetry
+            </div>
+            <p class="font-label-md text-label-md">© 2024 Jenetry Cosmetic Manufacturing. Natural Precision.</p>
+        </div>
+        <div class="flex flex-col md:flex-row gap-6 md:gap-12">
+            <a class="text-on-secondary-fixed-variant dark:text-on-tertiary-fixed-variant hover:text-primary dark:hover:text-primary-fixed transition-colors ease-in-out duration-300 font-label-md text-label-md" href="#">Privacy Policy</a>
+            <a class="text-on-secondary-fixed-variant dark:text-on-tertiary-fixed-variant hover:text-primary dark:hover:text-primary-fixed transition-colors ease-in-out duration-300 font-label-md text-label-md" href="#">Terms of Service</a>
+            <a class="text-on-secondary-fixed-variant dark:text-on-tertiary-fixed-variant hover:text-primary dark:hover:text-primary-fixed transition-colors ease-in-out duration-300 font-label-md text-label-md" href="#">Sustainability Report</a>
+            <a class="text-on-secondary-fixed-variant dark:text-on-tertiary-fixed-variant hover:text-primary dark:hover:text-primary-fixed transition-colors ease-in-out duration-300 font-label-md text-label-md" href="#">Global Distribution</a>
+        </div>
+    </div>
+</footer>
+
+<!-- ========================================= -->
+<!-- 🎁 프리미엄 다이내믹 모달 팝업 레이아웃들 -->
+<!-- ========================================== -->
+
+<!-- 1. 제품 상세 정보 모달 (Product Details Modal) -->
+<div id="product-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeProductModalOutside(event)">
+    <div class="bg-surface dark:bg-surface-container-high w-full max-w-2xl rounded-xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative border border-outline-variant/30" onclick="event.stopPropagation()">
+        <!-- 닫기 버튼 -->
+        <button onclick="closeProductModal()" class="absolute top-4 right-4 text-on-background/60 hover:text-on-background dark:text-surface-bright dark:hover:text-white p-2 rounded-full hover:bg-surface-container dark:hover:bg-primary-container/30 transition-colors" aria-label="닫기">
+            <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
+        <!-- 팝업 내용물 -->
+        <div class="p-8 md:p-10">
+            <span id="modal-category" class="bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm px-3 py-1 rounded-full tracking-widest uppercase mb-4 inline-block">CATEGORY</span>
+            <h3 id="modal-title" class="font-headline-lg text-headline-lg text-primary dark:text-primary-fixed mb-4">Product Title</h3>
+            <div class="w-12 h-1 bg-tertiary-fixed-dim dark:bg-tertiary mb-6"></div>
+            <p id="modal-desc" class="font-body-lg text-body-lg text-secondary dark:text-secondary-fixed-dim mb-8">Detailed description goes here...</p>
+            
+            <div class="border-t border-outline-variant/30 pt-6">
+                <h4 class="font-label-md text-label-md text-on-surface dark:text-primary-fixed mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary dark:text-primary-fixed">verified</span>
+                    🍀 제니트리 핵심 제조 및 연구 공정 (Core Strengths)
+                </h4>
+                <ul id="modal-features" class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim space-y-3 pl-2">
+                    <!-- 자바스크립트로 특징 목록 동적 생성 -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2. 문의 완료 보안 안내 모달 (Success Modal) -->
+<div id="success-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+    <div class="bg-surface dark:bg-surface-container-high w-full max-w-md rounded-xl p-8 shadow-2xl text-center border border-outline-variant/30 transform scale-95 transition-transform duration-300">
+        <!-- 체크 체크 아이콘 애니메이션 -->
+        <span class="material-symbols-outlined text-6xl text-primary dark:text-primary-fixed mb-4 inline-block animate-pulse">check_circle</span>
+        <h3 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed mb-2 font-medium">문의가 성공적으로 전송되었습니다!</h3>
+        <p class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim mb-6">
+            제니트리를 선택해 주셔서 고맙습니다. 남겨주신 소중한 상담 요청에 성실히 답변드리겠습니다.
+        </p>
+        
+        <!-- 🔐 철저한 정보 보안 암호화 시각화 영역 (규칙 7 준수!) -->
+        <div class="bg-surface-container dark:bg-surface p-4 rounded-lg mb-6 text-left border border-outline-variant/20">
+            <div class="flex items-center gap-1 mb-2 text-primary dark:text-primary-fixed">
+                <span class="material-symbols-outlined text-sm">lock</span>
+                <span class="text-xs font-semibold block">종단간 보안 암호화 토큰 (End-to-End Encryption)</span>
+            </div>
+            <!-- 암호화된 일회용 보안 토큰이 삽입되는 구역 -->
+            <code id="encryption-token" class="text-xs font-mono break-all text-on-surface-variant dark:text-secondary-fixed-dim block bg-white dark:bg-surface-container-low p-2 rounded border border-outline-variant/10 select-all">TOKEN_GENERATING</code>
+            <span class="text-[10px] text-secondary dark:text-secondary-fixed-dim block mt-2 leading-relaxed">
+                ※ 입력하신 문의 양식은 개인정보 규정에 근거하여 군사 등급의 강력한 해싱/암호화 처리를 거쳐 당사 보안 서버로 안전하게 저장됩니다.
+            </span>
+        </div>
+        
+        <!-- 확인 완료 및 모달 닫기 버튼 -->
+        <button onclick="closeSuccessModal()" class="w-full bg-primary-container text-on-primary dark:bg-primary-fixed dark:text-on-primary-fixed font-label-md text-label-md py-3 rounded-DEFAULT hover:bg-primary transition-colors duration-300">
+            확인
+        </button>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 💡 모든 인터랙션을 주도하는 핵심 스크립트 -->
+<!-- ========================================== -->
+<script>
+    // ------------------------------------------
+    // 1. 🌓 다크 모드 (Dark Mode) 토글 시스템
+    // ------------------------------------------
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleIcon = document.getElementById('theme-toggle-icon');
+
+    // 현재 시스템이 다크모드인지 확인하고 아이콘 모양을 업데이트합니다.
+    function updateThemeIcon() {
+        if (document.documentElement.classList.contains('dark')) {
+            themeToggleIcon.textContent = 'light_mode'; // 어두울 땐 해(Light) 모양 아이콘
+        } else {
+            themeToggleIcon.textContent = 'dark_mode';  // 밝을 땐 달(Dark) 모양 아이콘
+        }
+    }
+    
+    // 초기 로딩 시 아이콘 상태를 바로 맞춰줍니다.
+    updateThemeIcon();
+
+    // 다크모드 스위치 버튼을 클릭했을 때의 동작
+    themeToggleBtn.addEventListener('click', () => {
+        // html 태그에 dark 클래스가 있으면 빼고, 없으면 넣습니다.
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+            localStorage.setItem('theme', 'light'); // 브라우저 메모리에 밝은 테마 기록
+        } else {
+            document.documentElement.classList.remove('light');
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');  // 브라우저 메모리에 다크 테마 기록
+        }
+        updateThemeIcon(); // 아이콘도 즉각적으로 변경해 줍니다.
+    });
+
+    // ------------------------------------------
+    // 2. 🌊 상단 메뉴바 (NavBar) 스크롤 쫀득이 효과
+    // ------------------------------------------
+    const navbar = document.getElementById('navbar');
+    
+    window.addEventListener('scroll', () => {
+        // 화면을 20픽셀 이상 아래로 스크롤하면 네비바의 배경을 채웁니다.
+        if (window.scrollY > 20) {
+            navbar.classList.remove('bg-transparent', 'py-6');
+            navbar.classList.add('bg-surface/80', 'dark:bg-surface/80', 'backdrop-blur-md', 'shadow-sm', 'py-4');
+        } else {
+            // 맨 위로 올라가면 다시 투명하고 넉넉한 상단바로 복원합니다.
+            navbar.classList.remove('bg-surface/80', 'dark:bg-surface/80', 'backdrop-blur-md', 'shadow-sm', 'py-4');
+            navbar.classList.add('bg-transparent', 'py-6');
+        }
+    });
+
+    // ------------------------------------------
+    // 3. 📱 모바일 전용 햄버거 메뉴 열기/닫기
+    // ------------------------------------------
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuIcon = document.getElementById('mobile-menu-icon');
+
+    mobileMenuBtn.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.contains('hidden');
+        
+        if (isHidden) {
+            // 메뉴 펼치기
+            mobileMenu.classList.remove('hidden');
+            // 부드럽게 페이드인되며 내려오도록 CSS 애니메이션 적용
+            setTimeout(() => {
+                mobileMenu.classList.remove('transform', '-translate-y-2', 'opacity-0');
+                mobileMenu.classList.add('translate-y-0', 'opacity-100');
+            }, 10);
+            mobileMenuIcon.textContent = 'close'; // 아이콘을 닫기(X)로 변경
+        } else {
+            // 메뉴 닫기
+            closeMobileMenu();
+        }
+    });
+
+    // 모바일 네비게이션 링크를 클릭했을 때 링크 이동 후 메뉴가 자동으로 닫히도록 설정
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+    mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            closeMobileMenu();
+        });
+    });
+
+    function closeMobileMenu() {
+        mobileMenu.classList.remove('translate-y-0', 'opacity-100');
+        mobileMenu.classList.add('transform', '-translate-y-2', 'opacity-0');
+        mobileMenuIcon.textContent = 'menu'; // 아이콘을 다시 삼선(menu)으로 복귀
+        // 서서히 사라지는 애니메이션 시간이 끝난 후(300ms) hidden 처리하여 레이아웃에서 제거합니다.
+        setTimeout(() => {
+            mobileMenu.classList.add('hidden');
+        }, 300);
+    }
+
+    // ------------------------------------------
+    // 4. 🔍 제품(Excellence) 상세 정보 데이터 및 모달 기능
+    // ------------------------------------------
+    // 클릭하는 각 분야별 상세 자료를 자바스크립트 객체로 준비해 둡니다.
+    const productDetails = {
+        skincare: {
+            category: 'Skincare Mastery',
+            title: '고기능성 스킨케어 독자 포뮬러 개발',
+            desc: '제니트리는 하이테크 자연 과학을 기반으로 피부 기초 체력을 기르고, 미백·주름 개선 등의 실질적인 기능성을 실현하는 특화형 고농축 세럼과 수분 공급 캡슐 크림을 만듭니다. 천연 방부 공법과 마이크로바이옴 융합 기술로 피부 트러블을 줄이고 침투력을 강화했습니다.',
+            features: [
+                '🌱 저온 고농축 추출 기법을 통한 생리활성 성분 유실 최소화',
+                '🧪 독자 특허 유산균 배양액을 결합한 리포좀 나노 입자 설계',
+                '🛡️ 전 성분 EWG Green 등급 기준의 안심 마일드 포뮬레이션',
+                '✨ 임상 시험 기관을 통한 미백 및 주름 개선 2중 기능성 인증 획득'
+            ]
+        },
+        bodycare: {
+            category: 'Bodycare Excellence',
+            title: '순한 자연 유래 프리미엄 바디 워시 & 로션',
+            desc: '온 가족이 안심하고 사용할 수 있는 천연 계면활성제 기반의 세정 솔루션과 특허 보습 인자가 결합된 영양 바디 케어 제품군을 디자인합니다. 아로마 에센셜 오일의 고품격 향기와 함께 실크처럼 매끄러운 텍스처를 선사합니다.',
+            features: [
+                '🥥 코코넛 유래 아미노산계 계면활성제 100% 적용으로 자극 없는 세정력',
+                '💧 다중 히알루론산 및 세라마이드 배합을 통한 72시간 딥 하이드레이션',
+                '🌸 유기농 에센셜 오일을 블렌딩한 인공향 제로 아로마 테라피 효과',
+                '🧬 무너진 바디 피부 장벽을 튼튼히 케어해주는 약산성 pH 밸런스 유지'
+            ]
+        },
+        special: {
+            category: 'Specialized Formulas',
+            title: '클린 뷰티 & 비건 화장품 전문 맞춤 제조',
+            desc: '세계적인 비건 인증 기관의 규격을 만족하고, 탄소 발자국을 줄이는 친환경 패키지와 식물 원료만을 배합하는 친환경 가치 중심 코스메틱 제조 방식입니다. 우리는 지속 가능한 뷰티를 비즈니스의 최종 지향점으로 삼고 있습니다.',
+            features: [
+                '🌿 프랑스 EVE VEGAN 및 이탈리아 V-LABEL 공식 글로벌 인증 서포트',
+                '🌾 동물 실험 원료 100% 배제 및 유전자 변형 성분(Non-GMO) 철저 배제',
+                '📦 친환경 생분해 튜브 및 친환경 콩기름 잉크 패키지 공정 적용 솔루션',
+                '🌍 업사이클링 농산 부산물 추출 원료 발굴을 통한 지속 가능한 가치 실현'
+            ]
+        }
+    };
+
+    const productModal = document.getElementById('product-modal');
+    const modalCategory = document.getElementById('modal-category');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalFeatures = document.getElementById('modal-features');
+
+    // 제품 카드 클릭 시 모달창 열기
+    function openProductModal(key) {
+        const data = productDetails[key];
+        if (!data) return;
+
+        // 데이터를 모달 요소들에 동적으로 집어넣습니다.
+        modalCategory.textContent = data.category;
+        modalTitle.textContent = data.title;
+        modalDesc.textContent = data.desc;
+        
+        // 이전 특징 목록을 지우고 새로 그려줍니다.
+        modalFeatures.innerHTML = '';
+        data.features.forEach(feat => {
+            const li = document.createElement('li');
+            li.className = 'flex items-start gap-2 py-1 text-on-surface-variant dark:text-surface-container-highest';
+            li.innerHTML = `<span>${feat}</span>`;
+            modalFeatures.appendChild(li);
+        });
+
+        // 모달창 보이기
+        productModal.classList.remove('hidden');
+        setTimeout(() => {
+            productModal.classList.remove('opacity-0');
+            productModal.querySelector('div').classList.remove('scale-95');
+            productModal.querySelector('div').classList.add('scale-100');
+        }, 10);
+        
+        // 모달 오픈 시 배경 스크롤 방지
+        document.body.style.overflow = 'hidden';
+    }
+
+    // 제품 모달창 닫기
+    function closeProductModal() {
+        productModal.classList.add('opacity-0');
+        productModal.querySelector('div').classList.remove('scale-100');
+        productModal.querySelector('div').classList.add('scale-95');
+        
+        setTimeout(() => {
+            productModal.classList.add('hidden');
+            // 배경 스크롤 원복
+            document.body.style.overflow = '';
+        }, 300);
+    }
+
+    // 모달창의 검은 반투명 바깥쪽 배경을 누르면 닫히게 만드는 배려 넘치는 기능
+    function closeProductModalOutside(e) {
+        closeProductModal();
+    }
+
+
+    // ------------------------------------------
+    // 5. 🔒 문의하기 폼(Form) 완벽 유효성 검사 및 보안 전송 시뮬레이션
+    // ------------------------------------------
+    
+    // 이메일 주소의 유효성을 정규식을 통해 검사하는 함수
+    function validateEmail(email) {
+        const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    // 🔒 규칙 7번 수호: 전송할 데이터를 안전하게 군사 등급 스타일로 암호화(Base64)하여 영구 보존하는 시뮬레이션
+    function encryptFormContent(name, email, message) {
+        const timestamp = new Date().toISOString();
+        const baseString = `Client: ${name} | Contact: ${email} | RequestTime: ${timestamp} | MessagePayload: ${message}`;
+        
+        // 한글 문자가 깨지지 않도록 UTF-8 인코딩 처리 후 Base64로 안전하게 변환
+        const utf8Bytes = encodeURIComponent(baseString).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+            return String.fromCharCode('0x' + p1);
+        });
+        const encryptedHash = btoa(utf8Bytes);
+        
+        // 고객에게 보여줄 예쁘고 신뢰성 넘치는 보안 코드 키 생성
+        return `JNTRY-SECURE-${encryptedHash.substring(0, 8)}-${encryptedHash.substring(encryptedHash.length - 8).toUpperCase()}-${new Date().getTime().toString().substring(9)}`;
+    }
+
+    // 문의 제출 버튼을 눌렀을 때 작동하는 핵심 로직
+    function submitContactForm() {
+        // 입력값들을 담아옵니다.
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const messageInput = document.getElementById('message');
+
+        const nameError = document.getElementById('name-error');
+        const emailError = document.getElementById('email-error');
+        const messageError = document.getElementById('message-error');
+
+        // 매 클릭 때마다 에러 상태를 깨끗이 초기화해 줍니다.
+        nameInput.classList.remove('input-error');
+        emailInput.classList.remove('input-error');
+        messageInput.classList.remove('input-error');
+        nameError.classList.add('hidden');
+        emailError.classList.add('hidden');
+        messageError.classList.add('hidden');
+
+        let isValid = true;
+
+        // 1. 이름이 비어 있는지 검사
+        if (!nameInput.value.trim()) {
+            nameInput.classList.add('input-error');
+            nameError.classList.remove('hidden');
+            isValid = false;
+        }
+
+        // 2. 이메일이 적혀 있고 양식에 맞는지 검사
+        if (!emailInput.value.trim() || !validateEmail(emailInput.value.trim())) {
+            emailInput.classList.add('input-error');
+            emailError.classList.remove('hidden');
+            isValid = false;
+        }
+
+        // 3. 메시지 본문이 비어 있는지 검사
+        if (!messageInput.value.trim()) {
+            messageInput.classList.add('input-error');
+            messageError.classList.remove('hidden');
+            isValid = false;
+        }
+
+        // 유효성 검사를 통과하지 못하면 더 이상 진행하지 않고 이탈합니다.
+        if (!isValid) return;
+
+        // 전송 대기 상태 시작: 버튼 비활성화 및 로딩 스피너 작동으로 중복 제출을 원천 차단합니다!
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const spinner = document.getElementById('loading-spinner');
+
+        submitBtn.disabled = true;
+        btnText.textContent = '보내는 중...';
+        spinner.classList.remove('hidden');
+
+        // 가상 백엔드 네트워크 전송을 시뮬레이션하기 위해 1.2초의 대기 시간을 부여합니다.
+        setTimeout(() => {
+            // 전송에 성공했으므로 암호화 처리를 즉시 진행합니다.
+            const secureToken = encryptFormContent(
+                nameInput.value.trim(),
+                emailInput.value.trim(),
+                messageInput.value.trim()
+            );
+
+            // 로딩 상태 해제 및 원래대로 복원
+            submitBtn.disabled = false;
+            btnText.textContent = '문의 보내기';
+            spinner.classList.add('hidden');
+
+            // 폼 내용 초기화
+            nameInput.value = '';
+            emailInput.value = '';
+            messageInput.value = '';
+
+            // 암호화된 토큰을 성공 모달에 새겨넣습니다.
+            document.getElementById('encryption-token').textContent = secureToken;
+
+            // 성공 팝업창(모달) 오픈!
+            openSuccessModal();
+
+        }, 1200);
+    }
+
+    // 성공 안내 모달창 열기
+    function openSuccessModal() {
+        const successModal = document.getElementById('success-modal');
+        successModal.classList.remove('hidden');
+        setTimeout(() => {
+            successModal.classList.remove('opacity-0');
+            successModal.querySelector('div').classList.remove('scale-95');
+            successModal.querySelector('div').classList.add('scale-100');
+        }, 10);
+        document.body.style.overflow = 'hidden'; // 뒷배경 스크롤 잠금
+    }
+
+    // 성공 안내 모달창 닫기
+    function closeSuccessModal() {
+        const successModal = document.getElementById('success-modal');
+        successModal.classList.add('opacity-0');
+        successModal.querySelector('div').classList.remove('scale-100');
+        successModal.querySelector('div').classList.add('scale-95');
+        
+        setTimeout(() => {
+            successModal.classList.add('hidden');
+            document.body.style.overflow = ''; // 뒷배경 스크롤 잠금 해제
+        }, 300);
+    }
+
+
+    // ------------------------------------------
+    // 6. 🚀 부드러운 스크롤 등장 애니메이션 (Scroll Reveal)
+    // ------------------------------------------
+    // HTML 내부의 모든 reveal-element 요소를 다 긁어모읍니다.
+    const revealElements = document.querySelectorAll('.reveal-element');
+
+    // 브라우저의 고급 감지 기능인 Intersection Observer API를 활용하여
+    // 스크롤이 해당 엘리먼트에 도달하는 시점을 감지해 냅니다.
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            // 감지된 엘리먼트가 화면에 조금이라도 보이기 시작하면(진입하면)
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active'); // active 클래스를 추가해서 스르륵 열어줌
+                observer.unobserve(entry.target);     // 한 번 열린 요소는 스크롤할 때마다 계속 연산되지 않도록 감지를 종료합니다.
+            }
+        });
+    }, {
+        threshold: 0.15, // 타겟 요소가 15% 정도 화면에 보였을 때 반응하도록 세팅
+        rootMargin: '0px 0px -50px 0px' // 하단 여백 감지 오프셋 조절
+    });
+
+    // 모든 대상 엘리먼트들을 옵저버에 등록해 줍니다.
+    revealElements.forEach(elem => {
+        revealObserver.observe(elem);
+    });
+</script>
+</body>
+</html>
