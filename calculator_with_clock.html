@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 스마트 시계 계산기</title>
+    <!-- 🎨 현대적이고 깔끔한 화면 구성을 위해 Tailwind CSS 프레임워크를 가져옵니다 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 폰트: 구글 Noto Sans KR 폰트를 불러와 글씨체를 아주 이쁘게 만듭니다 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- 아이콘: 구글 머티리얼 심볼 아이콘 폰트를 가져와 시계와 계산기, 쓰레기통 아이콘 등을 예쁘게 꾸밉니다 -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <style>
+        /* [기본 스타일 설정 - 글꼴 및 부드러운 스크롤] */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); /* 은하수 같은 네이비색 그라데이션 */
+        }
+        
+        /* 🌌 유리 질감(Glassmorphism) 효과를 위한 특수 클래스 설정 */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7); /* 살짝 투명한 어두운 파란색 */
+            backdrop-filter: blur(16px); /* 뒤에 있는 배경을 뽀얗게 흐리게 만드는 마법 효과 */
+            border: 1px solid rgba(255, 255, 255, 0.08); /* 얇고 세련된 흰색 테두리 */
+        }
+        
+        /* 📜 계산기 기록 창에 들어갈 예쁜 스크롤바 디자인 */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: 9999px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 9999px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex items-center justify-center p-4 sm:p-8">
+
+    <!-- 🌌 전도유망한 스마트 시계 계산기 본체 (유리 질감 카드) -->
+    <div class="glass-card w-full max-w-md rounded-3xl p-6 shadow-2xl flex flex-col gap-6 transition-all duration-300 hover:shadow-cyan-950/20">
+        
+        <!-- 🕒 1구역: 실시간 스마트 시계 & 캘린더 전광판 -->
+        <div class="flex items-center justify-between bg-slate-950/50 rounded-2xl px-5 py-4 border border-white/5 shadow-inner">
+            <div class="flex flex-col">
+                <!-- 오늘 날짜 및 요일이 들어갈 공간 -->
+                <span id="live-date" class="text-xs text-cyan-400 font-semibold tracking-wider">로딩 중...</span>
+                <!-- 실시간으로 흘러갈 째깍째깍 시계 공간 -->
+                <span id="live-time" class="text-2xl font-bold tracking-widest text-white font-mono mt-0.5">00:00:00</span>
+            </div>
+            <!-- 귀여운 시계 스마트 아이콘 반짝임 효과 -->
+            <div class="w-10 h-10 rounded-full bg-cyan-950/50 flex items-center justify-center border border-cyan-500/20">
+                <span class="material-symbols-outlined text-cyan-400 animate-pulse text-xl">schedule</span>
+            </div>
+        </div>
+
+        <!-- 🧮 2구역: 계산기 수식/결과 액정화면 -->
+        <div class="bg-slate-950/70 rounded-2xl p-5 border border-white/5 shadow-inner text-right min-h-[120px] flex flex-col justify-between">
+            <!-- 사용자가 입력 중인 수식 화면 -->
+            <div id="expression-display" class="text-slate-400 text-sm tracking-wide font-mono overflow-x-auto whitespace-nowrap min-h-[1.5rem] custom-scroll pb-1"></div>
+            <!-- 연산 최종 결과 화면 -->
+            <div id="result-display" class="text-3xl sm:text-4xl font-bold text-white font-mono tracking-tight break-all">0</div>
+        </div>
+
+        <!-- 🔘 3구역: 계산기 버튼 배열 (4열 구조) -->
+        <div class="grid grid-cols-4 gap-3.5">
+            <!-- 1번째 줄: 리셋, 지우기, 퍼센트, 나누기 -->
+            <button onclick="clearAll()" class="bg-slate-700/60 hover:bg-slate-600/70 active:scale-95 text-cyan-400 font-bold py-3.5 rounded-xl transition-all shadow-md">AC</button>
+            <button onclick="deleteLast()" class="bg-slate-700/60 hover:bg-slate-600/70 active:scale-95 text-cyan-400 font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center">
+                <span class="material-symbols-outlined text-lg">backspace</span>
+            </button>
+            <button onclick="append('%')" class="bg-slate-700/60 hover:bg-slate-600/70 active:scale-95 text-cyan-400 font-bold py-3.5 rounded-xl transition-all shadow-md">%</button>
+            <button onclick="append('/')" class="bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-bold text-xl py-3.5 rounded-xl transition-all shadow-md">÷</button>
+
+            <!-- 2번째 줄: 7, 8, 9, 곱하기 -->
+            <button onclick="append('7')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">7</button>
+            <button onclick="append('8')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">8</button>
+            <button onclick="append('9')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">9</button>
+            <button onclick="append('*')" class="bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-bold text-xl py-3.5 rounded-xl transition-all shadow-md">×</button>
+
+            <!-- 3번째 줄: 4, 5, 6, 빼기 -->
+            <button onclick="append('4')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">4</button>
+            <button onclick="append('5')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">5</button>
+            <button onclick="append('6')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">6</button>
+            <button onclick="append('-')" class="bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-slate-950 font-bold text-2xl py-3.5 rounded-xl transition-all shadow-md">−</button>
+
+            <!-- 4번째 줄: 1, 2, 3, 더하기 -->
+            <button onclick="append('1')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">1</button>
+            <button onclick="append('2')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">2</button>
+            <button onclick="append('3')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">3</button>
+            <button onclick="append('+')" class="bg-rose-500 hover:bg-rose-400 active:scale-95 text-slate-950 font-bold text-2xl py-3.5 rounded-xl transition-all shadow-md">+</button>
+
+            <!-- 5번째 줄: 0, 소수점, 결과(=) -->
+            <button onclick="append('0')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">0</button>
+            <button onclick="append('.')" class="bg-slate-800/40 hover:bg-slate-700/50 active:scale-95 text-white text-lg font-semibold py-3.5 rounded-xl transition-all border border-white/5 shadow-md">.</button>
+            <button onclick="compute()" class="col-span-2 bg-gradient-to-r from-cyan-500 to-teal-400 hover:from-cyan-400 hover:to-teal-300 active:scale-95 text-slate-950 font-bold text-2xl py-3.5 rounded-xl transition-all shadow-md shadow-cyan-500/20">=</button>
+        </div>
+
+        <!-- 📜 4구역: 똑똑한 계산 기록 보관소 (히스토리 리스트) -->
+        <div class="border-t border-white/10 pt-5 flex flex-col gap-3">
+            <div class="flex items-center justify-between px-1">
+                <div class="flex items-center gap-1.5 text-slate-300 font-semibold text-sm">
+                    <span class="material-symbols-outlined text-slate-400 text-lg">receipt_long</span>
+                    <span>계산 영수증 보관함</span>
+                </div>
+                <!-- 쓰레기통 모양의 기록 지우기 단추 -->
+                <button onclick="clearHistory()" class="text-slate-400 hover:text-rose-400 transition-colors flex items-center justify-center p-1 rounded-md hover:bg-white/5" title="모든 기록 지우기">
+                    <span class="material-symbols-outlined text-lg">delete</span>
+                </button>
+            </div>
+            
+            <!-- 영수증 내역들이 차곡차곡 위로 스크롤되며 쌓이는 박스 공간 -->
+            <div id="history-box" class="h-40 overflow-y-auto custom-scroll flex flex-col gap-2 pr-1">
+                <!-- 기록이 없을 때 나타나는 안내 문구 -->
+                <div id="no-history-msg" class="h-full flex flex-col items-center justify-center text-slate-500 gap-1 text-xs py-10">
+                    <span class="material-symbols-outlined text-2xl text-slate-600">drafts</span>
+                    <span>아직 계산 내역이 없습니다.</span>
+                </div>
+                <div id="history-list" class="flex flex-col gap-2"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- [자바스크립트 - 시계 작동 및 계산, 영수증 저장 처리 시스템] -->
+    <script>
+        // ----------------------------------------------------
+        // 1. 🕒 1초마다 똑딱똑딱 흐르는 실시간 시계 & 날짜 설정
+        // ----------------------------------------------------
+        function updateClock() {
+            const now = new Date(); // 현재 시간 데이터를 통째로 받아옵니다.
+
+            // 연, 월, 일, 요일 정보를 추출합니다.
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 해줍니다.
+            const date = String(now.getDate()).padStart(2, '0');
+            const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+            const day = weekdays[now.getDay()]; // 요일을 한글로 찾아옵니다.
+
+            // 시, 분, 초 정보를 추출하고 무조건 2자리로 표현합니다. (예: 5초 -> 05초)
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            // 화면의 날짜와 시간 글씨를 실시간 값으로 변경합니다.
+            document.getElementById('live-date').innerText = `${year}년 ${month}월 ${date}일 (${day})`;
+            document.getElementById('live-time').innerText = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // 페이지가 열리자마자 시계를 바로 한 번 실행하고, 그 뒤로 1초(1000밀리초)마다 무한 가동시킵니다.
+        updateClock();
+        setInterval(updateClock, 1000);
+
+
+        // ----------------------------------------------------
+        // 2. 🧮 계산기 본 기능 구현 (입력, 지우기, 계산 엔진)
+        // ----------------------------------------------------
+        let expression = ''; // 수식을 영어/숫자 날것 형태로 저장해 놓는 변수입니다.
+
+        const expressionDisplay = document.getElementById('expression-display');
+        const resultDisplay = document.getElementById('result-display');
+
+        // (1) 버튼을 누를 때마다 화면에 글자를 이어 붙여 줍니다.
+        function append(value) {
+            // 수식이 텅 비어있는데 사칙연산 기호부터 누르면 앞에 0을 자동으로 붙여 줍니다.
+            if (expression === '' && ['+', '*', '/', '%'].includes(value)) {
+                expression = '0';
+            }
+            expression += value;
+            updateDisplay();
+        }
+
+        // (2) 전체 다 비우기 (AC)
+        function clearAll() {
+            expression = '';
+            expressionDisplay.innerText = '';
+            resultDisplay.innerText = '0';
+        }
+
+        // (3) 한 글자만 지우기 (DEL)
+        function deleteLast() {
+            if (expression.length > 0) {
+                expression = expression.slice(0, -1);
+                updateDisplay();
+            }
+        }
+
+        // (4) 사람이 보기 편하게 곱하기(×), 나누기(÷) 기호로 바꾸어 화면에 띄워줍니다.
+        function updateDisplay() {
+            let viewText = expression
+                .replace(/\*/g, ' × ')
+                .replace(/\//g, ' ÷ ')
+                .replace(/\+/g, ' + ')
+                .replace(/\-/g, ' − ');
+            expressionDisplay.innerText = viewText;
+            
+            // 만약 사용자가 다 지워서 비어있다면 결과 창도 0으로 복구합니다.
+            if (expression === '') {
+                resultDisplay.innerText = '0';
+            }
+        }
+
+        // (5) 🌟 대망의 실제 계산 로직 (= 버튼 클릭 시 실행) 🌟
+        function compute() {
+            if (expression === '') return;
+
+            try {
+                // 퍼센트 기호(%)가 있으면 수식 연산이 되도록 나누기 100(/100)으로 치환합니다.
+                let jsExpression = expression.replace(/%/g, '/100');
+
+                // 안전하게 수학 연산을 해독하여 결과를 구해옵니다.
+                let result = eval(jsExpression);
+
+                // 결과값이 없는 엉터리 수식이거나 에러가 났을 때의 예외 처리
+                if (result === undefined || isNaN(result)) {
+                    throw new Error();
+                }
+
+                // 소수점인 경우 소수점 10자리까지만 반올림 처리하여 불필요하게 긴 지저분한 숫자를 방지합니다.
+                if (typeof result === 'number' && !Number.isInteger(result)) {
+                    result = Math.round(result * 10000000000) / 10000000000;
+                }
+
+                // [중요] 계산 기록(영수증)으로 저장하기 위해 이쁜 포맷을 만듭니다.
+                let prettyExpression = expression
+                    .replace(/\*/g, ' × ')
+                    .replace(/\//g, ' ÷ ')
+                    .replace(/\+/g, ' + ')
+                    .replace(/\-/g, ' − ');
+
+                const record = `${prettyExpression} = ${result}`;
+                
+                // 영수증 보관함에 저장을 시작합니다!
+                saveToHistory(record);
+
+                // 화면에 결과를 크고 아름답게 띄워 줍니다.
+                resultDisplay.innerText = result;
+
+                // 연속 계산이 가능하도록 수식 저장소에 결과값을 그대로 탑재시킵니다.
+                expression = result.toString();
+                updateDisplay();
+            } catch (error) {
+                // 연산 중 에러가 발생하면 "Error" 경고를 띄웁니다.
+                resultDisplay.innerText = 'Error';
+                expression = '';
+            }
+        }
+
+
+        // ----------------------------------------------------
+        // 3. 📜 영수증 히스토리 저장 및 개인금고(Local Storage) 보관
+        // ----------------------------------------------------
+        let calcHistory = []; // 연산 기록들을 담을 빈 주머니 배열입니다.
+
+        const historyList = document.getElementById('history-list');
+        const noHistoryMsg = document.getElementById('no-history-msg');
+        const historyBox = document.getElementById('history-box');
+
+        // (1) 브라우저 안전 금고(LocalStorage)에서 저장된 옛날 기록들 다 긁어오기
+        function loadHistory() {
+            const stored = localStorage.getItem('myCalcHistory');
+            if (stored) {
+                calcHistory = JSON.parse(stored); // 글자로 저장되어 있던 것을 진짜 배열 주머니로 복구합니다.
+            }
+            renderHistory(); // 화면에 목록을 쫙 그려줍니다.
+        }
+
+        // (2) 새로운 계산 내역을 배열에 넣고 브라우저 안전 금고에 저장하기
+        function saveToHistory(record) {
+            calcHistory.unshift(record); // 가장 최신 계산이 맨 위로 가도록 맨 처음에 밀어 넣습니다.
+            
+            // 기록이 너무 많아지면 느려질 수 있으므로, 최근 기록 최대 50개만 남깁니다.
+            if (calcHistory.length > 50) {
+                calcHistory.pop(); // 가장 오래된 꼬리쪽 기록 하나를 지웁니다.
+            }
+
+            // 배열 주머니를 글자 형태(JSON)로 굳혀서 브라우저 금고에 차곡차곡 세이브합니다.
+            localStorage.setItem('myCalcHistory', JSON.stringify(calcHistory));
+            renderHistory();
+        }
+
+        // (3) 보관함에 저장되어 있는 기록들을 예쁘고 투명한 미니 카드로 화면에 출력하기
+        function renderHistory() {
+            // 목록을 다 비우고 새로 깔끔하게 시작합니다.
+            historyList.innerHTML = '';
+
+            if (calcHistory.length === 0) {
+                // 기록이 하나도 없을 때
+                noHistoryMsg.classList.remove('hidden');
+            } else {
+                // 기록이 1개라도 존재할 때
+                noHistoryMsg.classList.add('hidden');
+
+                calcHistory.forEach((item, index) => {
+                    // 계산 영수증 한 줄을 담을 아름다운 미니 유리 상자(Card) 조립
+                    const card = document.createElement('div');
+                    card.className = "bg-white/5 border border-white/5 hover:bg-white/10 px-4 py-2.5 rounded-xl text-xs flex justify-between items-center transition-all duration-150 animate-fadeIn";
+                    
+                    // 수식과 결과 영역
+                    const contentSpan = document.createElement('span');
+                    contentSpan.className = "font-mono text-slate-300 break-all select-all pr-2";
+                    contentSpan.innerText = item;
+                    
+                    // 개별 내역 1개 지우는 미니 단추
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = "text-slate-500 hover:text-rose-400 transition-colors flex items-center justify-center p-0.5 rounded";
+                    deleteBtn.innerHTML = '<span class="material-symbols-outlined text-base">close</span>';
+                    deleteBtn.onclick = function() {
+                        deleteSingleHistory(index);
+                    };
+
+                    card.appendChild(contentSpan);
+                    card.appendChild(deleteBtn);
+                    historyList.appendChild(card);
+                });
+            }
+        }
+
+        // (4) 계산 내역 개별 한 줄 지우기 기능
+        function deleteSingleHistory(index) {
+            calcHistory.splice(index, 1); // 배열 주머니에서 해당 순서의 내역을 도려냅니다.
+            localStorage.setItem('myCalcHistory', JSON.stringify(calcHistory)); // 바뀐 내역을 금고에 갱신
+            renderHistory(); // 화면 갱신
+        }
+
+        // (5) 계산 보관함 싹 지우기 (전체 삭제 🗑️)
+        function clearHistory() {
+            // 사용자에게 물어보기
+            if (confirm("정말 보관된 모든 계산 영수증을 싹 비우시겠습니까?")) {
+                calcHistory = []; // 주머니 비우기
+                localStorage.removeItem('myCalcHistory'); // 안전 금고 폐기
+                renderHistory(); // 화면 리모델링
+            }
+        }
+
+        // 처음 사이트에 접속하여 준비가 끝나면, 자동으로 옛날에 했던 계산기 기록을 다 불러옵니다.
+        loadHistory();
+    </script>
+</body>
+</html>
