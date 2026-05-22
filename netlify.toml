@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/"
+  to = "/calculator_with_clock.html"
+  status = 200
